@@ -16,7 +16,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "package": "com.scurrlin.aora"
     },
     "android": {
       "adaptiveIcon": {
