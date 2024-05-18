@@ -2,10 +2,12 @@ import { useState } from "react";
 import { ResizeMode, Video } from "expo-av";
 import * as Animatable from "react-native-animatable";
 import {
+  Alert,
   FlatList,
   Image,
   ImageBackground,
   TouchableOpacity,
+  View,
 } from "react-native";
 
 import { icons } from "../constants";
@@ -15,7 +17,7 @@ const zoomIn = {
     scale: 0.9,
   },
   1: {
-    scale: 1,
+    scale: 1.1,
   },
 };
 
@@ -36,11 +38,12 @@ const TrendingItem = ({ activeItem, item }) => {
       className="mr-5"
       animation={activeItem === item.$id ? zoomIn : zoomOut}
       duration={500}
+      easing="ease-in-out-back"
     >
       {play ? (
         <Video
           source={{ uri: item.video }}
-          className="w-52 h-72 rounded-[33px] mt-3 bg-white/10"
+          className="mt-3 h-72 w-52 rounded-[33px] bg-white/10"
           resizeMode={ResizeMode.CONTAIN}
           useNativeControls
           shouldPlay
@@ -48,11 +51,16 @@ const TrendingItem = ({ activeItem, item }) => {
             if (status.didJustFinish) {
               setPlay(false);
             }
+
+            if (status.error) {
+              Alert.alert("Video unavailable please try again later.");
+              setPlay(false);
+            }
           }}
         />
       ) : (
         <TouchableOpacity
-          className="relative flex justify-center items-center"
+          className="relative flex items-center justify-center"
           activeOpacity={0.7}
           onPress={() => setPlay(true)}
         >
@@ -60,13 +68,13 @@ const TrendingItem = ({ activeItem, item }) => {
             source={{
               uri: item.thumbnail,
             }}
-            className="w-52 h-72 rounded-[33px] my-5 overflow-hidden shadow-lg shadow-black/40"
+            className="my-5 h-72 w-52 overflow-hidden rounded-[33px] shadow-lg shadow-black/40"
             resizeMode="cover"
           />
 
           <Image
             source={icons.play}
-            className="w-12 h-12 absolute"
+            className="absolute h-12 w-12"
             resizeMode="contain"
           />
         </TouchableOpacity>

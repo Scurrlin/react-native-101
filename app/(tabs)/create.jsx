@@ -1,21 +1,25 @@
 import { useState } from "react";
 import { router } from "expo-router";
 import { ResizeMode, Video } from "expo-av";
-import * as DocumentPicker from "expo-document-picker";
-import { SafeAreaView } from "react-native-safe-area-context";
+import * as ImagePicker from "expo-image-picker";
 import {
-  View,
-  Text,
   Alert,
   Image,
-  TouchableOpacity,
   ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import { useGlobalContext } from "../../context/GlobalProvider";
+
+import { createVideoPost } from "../../lib/appwrite";
+
+import FormField from "../../components/FormField";
+import CustomButton from "../../components/CustomButton";
 
 import { icons } from "../../constants";
-import { createVideoPost } from "../../lib/appwrite";
-import { CustomButton, FormField } from "../../components";
-import { useGlobalContext } from "../../context/GlobalProvider";
 
 const Create = () => {
   const { user } = useGlobalContext();
@@ -28,12 +32,16 @@ const Create = () => {
   });
 
   const openPicker = async (selectType) => {
-    const result = await DocumentPicker.getDocumentAsync({
-      type:
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes:
         selectType === "image"
-          ? ["image/png", "image/jpg"]
-          : ["video/mp4", "video/gif"],
+          ? ImagePicker.MediaTypeOptions.Images
+          : ImagePicker.MediaTypeOptions.Videos,
+      aspect: [4, 3],
+      quality: 1,
     });
+
+    if (result.canceled) return;
 
     if (!result.canceled) {
       if (selectType === "image") {
@@ -57,21 +65,21 @@ const Create = () => {
   };
 
   const submit = async () => {
-    if (
-      (form.prompt === "") |
-      (form.title === "") |
-      !form.thumbnail |
-      !form.video
-    ) {
+    const { prompt, title, thumbnail, video } = form;
+
+    if ((prompt === "") | (title === "") | !thumbnail | !video) {
       return Alert.alert("Please provide all fields");
     }
 
     setUploading(true);
+
     try {
-      await createVideoPost({
+      const newVideoPost = await createVideoPost({
         ...form,
         userId: user.$id,
       });
+
+      console.log(newVideoPost);
 
       Alert.alert("Success", "Post uploaded successfully");
       router.push("/home");
@@ -90,9 +98,9 @@ const Create = () => {
   };
 
   return (
-    <SafeAreaView className="bg-primary h-full">
-      <ScrollView className="px-4 my-6">
-        <Text className="text-2xl text-white font-psemibold">Upload Video</Text>
+    <SafeAreaView className="h-full bg-primary">
+      <ScrollView className="my-6  px-4">
+        <Text className="font-psemibold text-2xl text-white">Upload Video</Text>
 
         <FormField
           title="Video Title"
@@ -103,7 +111,7 @@ const Create = () => {
         />
 
         <View className="mt-7 space-y-2">
-          <Text className="text-base text-gray-100 font-pmedium">
+          <Text className="font-pmedium text-base text-gray-100">
             Upload Video
           </Text>
 
@@ -111,19 +119,19 @@ const Create = () => {
             {form.video ? (
               <Video
                 source={{ uri: form.video.uri }}
-                className="w-full h-64 rounded-2xl"
+                className="h-64 w-full rounded-2xl"
                 useNativeControls
                 resizeMode={ResizeMode.COVER}
                 isLooping
               />
             ) : (
-              <View className="w-full h-40 px-4 bg-black-100 rounded-2xl border border-black-200 flex justify-center items-center">
-                <View className="w-14 h-14 border border-dashed border-secondary-100 flex justify-center items-center">
+              <View className="flex h-40 w-full items-center justify-center rounded-2xl border border-black-200 bg-black-100 px-4">
+                <View className="flex h-14 w-14 items-center justify-center border border-dashed border-secondary-100">
                   <Image
                     source={icons.upload}
                     resizeMode="contain"
                     alt="upload"
-                    className="w-1/2 h-1/2"
+                    className="h-1/2 w-1/2"
                   />
                 </View>
               </View>
@@ -132,7 +140,7 @@ const Create = () => {
         </View>
 
         <View className="mt-7 space-y-2">
-          <Text className="text-base text-gray-100 font-pmedium">
+          <Text className="font-pmedium text-base text-gray-100">
             Thumbnail Image
           </Text>
 
@@ -141,17 +149,17 @@ const Create = () => {
               <Image
                 source={{ uri: form.thumbnail.uri }}
                 resizeMode="cover"
-                className="w-full h-64 rounded-2xl"
+                className="h-64 w-full rounded-2xl"
               />
             ) : (
-              <View className="w-full h-16 px-4 bg-black-100 rounded-2xl border-2 border-black-200 flex justify-center items-center flex-row space-x-2">
+              <View className="flex h-16 w-full flex-row items-center justify-center space-x-2 rounded-2xl border-2 border-black-200 bg-black-100 px-4">
                 <Image
                   source={icons.upload}
                   resizeMode="contain"
                   alt="upload"
-                  className="w-5 h-5"
+                  className="h-5 w-5"
                 />
-                <Text className="text-sm text-gray-100 font-pmedium">
+                <Text className="font-pmedium text-sm text-gray-100">
                   Choose a file
                 </Text>
               </View>

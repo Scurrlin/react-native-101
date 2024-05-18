@@ -1,16 +1,23 @@
-import { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { FlatList, Image, RefreshControl, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
+import { useState } from "react";
 
 import { images } from "../../constants";
+
+import VideoCard from "../../components/VideoCard";
+import SearchInput from "../../components/SearchInput";
+import Trending from "../../components/Trending";
+import EmptyState from "../../components/EmptyState";
+
 import useAppwrite from "../../lib/useAppwrite";
 import { getAllPosts, getLatestPosts } from "../../lib/appwrite";
-import { EmptyState, SearchInput, Trending, VideoCard } from "../../components";
+import { useGlobalContext } from "../../context/GlobalProvider";
 
 const Home = () => {
-  const { data: posts, refetch } = useAppwrite(getAllPosts);
+  const { user } = useGlobalContext();
+  const { data: posts, refetch, loading } = useAppwrite(getAllPosts);
   const { data: latestPosts } = useAppwrite(getLatestPosts);
-
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = async () => {
@@ -19,14 +26,8 @@ const Home = () => {
     setRefreshing(false);
   };
 
-  // one flatlist
-  // with list header
-  // and horizontal flatlist
-
-  //  we cannot do that with just scrollview as there's both horizontal and vertical scroll (two flat lists, within trending)
-
   return (
-    <SafeAreaView className="bg-primary">
+    <SafeAreaView className=" h-full bg-primary">
       <FlatList
         data={posts}
         keyExtractor={(item) => item.$id}
@@ -35,35 +36,39 @@ const Home = () => {
             title={item.title}
             thumbnail={item.thumbnail}
             video={item.video}
-            creator={item.creator.username}
-            avatar={item.creator.avatar}
+            creator={item.creator?.username}
+            avatar={item.creator?.avatar}
           />
         )}
         ListHeaderComponent={() => (
-          <View className="flex my-6 px-4 space-y-6">
-            <View className="flex justify-between items-start flex-row mb-6">
+          <View className="my-6 space-y-6 px-4">
+            <View className="mb-6 flex-row items-start justify-between">
               <View>
                 <Text className="font-pmedium text-sm text-gray-100">
-                  Welcome Back
+                  Welcome Back,
                 </Text>
-                <Text className="text-2xl font-psemibold text-white">
-                  JSMastery
-                </Text>
+                {user ? (
+                  <Text className="font-psemibold text-2xl text-white">
+                    {user.username}
+                  </Text>
+                ) : (
+                  <Text className="font-psemibold text-2xl text-white">
+                    Loading...
+                  </Text>
+                )}
               </View>
-
               <View className="mt-1.5">
                 <Image
                   source={images.logoSmall}
-                  className="w-9 h-10"
+                  className="h-10 w-9"
                   resizeMode="contain"
                 />
               </View>
             </View>
-
             <SearchInput />
 
-            <View className="w-full flex-1 pt-5 pb-8">
-              <Text className="text-lg font-pregular text-gray-100 mb-3">
+            <View className="w-full flex-1 pb-8 pt-5">
+              <Text className="mb-3 font-pregular text-lg text-gray-100">
                 Latest Videos
               </Text>
 
@@ -81,6 +86,7 @@ const Home = () => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       />
+      <StatusBar backgroundColor="#161622" style="light" />
     </SafeAreaView>
   );
 };

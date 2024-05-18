@@ -6,15 +6,15 @@ import CustomButton from "./CustomButton";
 
 const EmptyState = ({ title, subtitle }) => {
   return (
-    <View className="flex justify-center items-center px-4">
+    <View className="flex items-center justify-center px-4">
       <Image
         source={images.empty}
         resizeMode="contain"
-        className="w-[270px] h-[216px]"
+        className="h-[216px] w-[270px]"
       />
 
-      <Text className="text-sm font-pmedium text-gray-100">{title}</Text>
-      <Text className="text-xl text-center font-psemibold text-white mt-2">
+      <Text className="font-pmedium text-sm text-gray-100">{title}</Text>
+      <Text className="mt-2 text-center font-psemibold text-xl text-white">
         {subtitle}
       </Text>
 
