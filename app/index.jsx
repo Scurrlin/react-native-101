@@ -1,7 +1,7 @@
-import { StatusBar } from "expo-status-bar";
 import { Image, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Redirect, router } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 import { images } from "../constants";
 import CustomButton from "../components/CustomButton";
@@ -51,7 +51,7 @@ export default function App() {
             title="Continue with Email"
             handlePress={() => router.push("/sign-in")}
             containerStyles="w-full mt-7"
-            textStyle="font-bold"
+            // textStyle="font-bold"
           />
         </View>
       </ScrollView>
