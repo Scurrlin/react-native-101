@@ -51,12 +51,11 @@ export default function App() {
             title="Continue with Email"
             handlePress={() => router.push("/sign-in")}
             containerStyles="w-full mt-7"
-            // textStyle="font-bold"
           />
         </View>
       </ScrollView>
 
-      <StatusBar style="light" backgroundColor="#161622" />
+      <StatusBar backgroundColor="#161622" style="light" />
     </SafeAreaView>
   );
 };
