@@ -1,7 +1,9 @@
 # Aora
 A video-sharing platform dedicated to AI-generated videos, enabling users to upload, share, and view AI-created content!
 
-![banner_image](https://i.imgur.com/OWUGdL2.png)
+<p align="center">
+  <img src="https://i.imgur.com/OWUGdL2.png" alt="banner_image">
+</p>
 
 ## Technologies Used
 * HTML/JS/CSS
