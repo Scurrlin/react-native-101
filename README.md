@@ -2,7 +2,7 @@
 A video-sharing platform dedicated to AI-generated videos, enabling users to upload, share, and view AI-created content!
 
 <p align="center">
-  <img src="https://i.imgur.com/OWUGdL2.png" alt="banner_image">
+  <img src="./assets/React_Native.png" alt="banner_image">
 </p>
 
 ## Technologies Used
