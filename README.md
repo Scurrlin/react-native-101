@@ -1,8 +1,6 @@
 # Aora
 A video-sharing platform dedicated to AI-generated videos, enabling users to upload, share, and view AI-created content!
 
-![banner_image](https://i.postimg.cc/5NR9bxFM/Sora-README.png)
-
 ## Technologies Used
 * HTML/JS/CSS
 * React Native
